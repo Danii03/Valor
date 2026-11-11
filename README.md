@@ -56,6 +56,21 @@ src/
 8. **Creative-Platz** in `ValorCreativeTabs`, direkt neben verwandten Vanilla-Einträgen
 9. `./gradlew runDatagen` und dann `./gradlew runClient`
 
+## Weltgenerierung (Biome, Bäume, Features)
+
+| Was | Wo |
+|---|---|
+| Biom-Schlüssel (`valor:whispering_woods`) | `world/level/biome/ValorBiomes.java` |
+| Platzierung in der Overworld | `mixin/OverworldBiomeBuilderMixin.java` (übernimmt die positive „Weirdness“-Hälfte des Dark-Forest-Klimas) |
+| Eigene Feature-Typen (Code) | `registry/ValorFeatures.java` → `TemplateTreeFeature` (NBT-Bäume), `StreamFeature` (Bäche) |
+| Biom-Inhalt, Farben, Spawns, Musik | `client/datagen/worldgen/ValorBiomeData.java` |
+| Was generiert wird (Bäume, Moos, Bodenflecken, Bäche) | `client/datagen/worldgen/ValorConfiguredFeatures.java` (u. a. Baum-Gewichtung) |
+| Wo/wie oft | `client/datagen/worldgen/ValorPlacedFeatures.java` (u. a. Baumdichte) |
+| Biom-Tags (Strukturen, `is_forest`, …) | `client/datagen/ValorBiomeTagProvider.java` |
+| Baum-Vorlagen (`.nbt`) | `resources/data/valor/structure/whispering_woods/` |
+
+**Testen:** Neue Welt → *Weltoptionen* → Welttyp **Einzelnes Biom** → *Flüsterwald*, oder in einer normalen neuen Welt `/locate biome valor:whispering_woods`. Biome und Features wirken nur in neu generierten Chunks.
+
 ## License
 
 CC0. Siehe `LICENSE`.

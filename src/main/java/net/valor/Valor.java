@@ -5,6 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.valor.registry.ValorBlocks;
 import net.valor.registry.ValorCreativeTabs;
 import net.valor.network.ValorNetworking;
+import net.valor.registry.ValorFeatures;
+import net.valor.registry.ValorStructureProcessorTypes;
 import net.valor.registry.ValorItems;
 import net.valor.registry.ValorParticleTypes;
 import net.valor.registry.ValorSounds;
@@ -27,6 +29,8 @@ public final class Valor implements ModInitializer {
 		ValorBlocks.init();
 		ValorItems.init();
 		ValorParticleTypes.init();
+		ValorStructureProcessorTypes.init();
+		ValorFeatures.init();
 		ValorCreativeTabs.init();
 		ValorNetworking.init();
 

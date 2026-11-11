@@ -2,7 +2,9 @@
 	"required": true,
 	"package": "net.valor.mixin",
 	"compatibilityLevel": "JAVA_21",
-	"mixins": [],
+	"mixins": [
+		"OverworldBiomeBuilderMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	},

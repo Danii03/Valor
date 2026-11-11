@@ -22,5 +22,6 @@ public final class ValorGermanLanguageProvider extends FabricLanguageProvider {
 	public void generateTranslations(HolderLookup.Provider registries, TranslationBuilder builder) {
 		builder.add(ValorItems.ECHO_FLUTE, "Echoflöte");
 		builder.add("screen.valor.echo_flute", "Echoflöte");
+		builder.add("biome.valor.whispering_woods", "Flüsterwald");
 	}
 }
