@@ -61,15 +61,47 @@ src/
 | Was | Wo |
 |---|---|
 | Biom-Schlüssel (`valor:whispering_woods`) | `world/level/biome/ValorBiomes.java` |
-| Platzierung in der Overworld | `mixin/OverworldBiomeBuilderMixin.java` (übernimmt die positive „Weirdness“-Hälfte des Dark-Forest-Klimas) |
+| Klima-Platz in der Overworld | `mixin/OverworldBiomeBuilderMixin.java` (meldet das Biom im Dark-Forest-Klima an) |
+| **Seltenheit und Gebietsgröße** | `world/level/biome/WhisperingWoodsRegions.java` + `mixin/MultiNoiseBiomeSourceMixin.java` |
+| **Waldzonen** (Outer Woods, Deepwood, Hidden Groves) | `world/level/levelgen/WhisperingWoodsZones.java`, angewendet über den Placement-Filter `valor:whispering_woods_zone` |
 | Eigene Feature-Typen (Code) | `registry/ValorFeatures.java` → `TemplateTreeFeature` (NBT-Bäume), `StreamFeature` (Bäche) |
 | Biom-Inhalt, Farben, Spawns, Musik | `client/datagen/worldgen/ValorBiomeData.java` |
-| Was generiert wird (Bäume, Moos, Bodenflecken, Bäche) | `client/datagen/worldgen/ValorConfiguredFeatures.java` (u. a. Baum-Gewichtung) |
-| Wo/wie oft | `client/datagen/worldgen/ValorPlacedFeatures.java` (u. a. Baumdichte) |
+| Was generiert wird | `client/datagen/worldgen/ValorConfiguredFeatures.java` |
+| Wo/wie oft, pro Zone | `client/datagen/worldgen/ValorPlacedFeatures.java` (`zone(outer, deepwood, grove)`) |
 | Biom-Tags (Strukturen, `is_forest`, …) | `client/datagen/ValorBiomeTagProvider.java` |
 | Baum-Vorlagen (`.nbt`) | `resources/data/valor/structure/whispering_woods/` |
 
-**Testen:** Neue Welt → *Weltoptionen* → Welttyp **Einzelnes Biom** → *Flüsterwald*, oder in einer normalen neuen Welt `/locate biome valor:whispering_woods`. Biome und Features wirken nur in neu generierten Chunks.
+### Seltenheit und Größe der Whispering Woods
+
+Zwei getrennte Stellschrauben:
+
+- **Größe** ergibt sich aus dem Vanilla-Klima: Das Biom übernimmt immer den *ganzen* Dark-Forest-Klimabereich einer Region, nicht nur einen Streifen davon. Ein Gebiet ist also so groß wie ein vollständiger Dark Forest.
+- **Seltenheit** steuert eine sehr großräumige Noise mit Welt-Seed (`WhisperingWoodsRegions`). Nur wo sie über `THRESHOLD` liegt, wird aus Dark Forest Flüsterwald (aktuell ca. 25 % des Dark-Forest-Klimas). Höherer `THRESHOLD` = seltener. `REGION_SCALE` bestimmt, wie weit die Gebiete auseinanderliegen.
+
+Übergänge zu anderen Biomen bleiben die eines Dark Forest, das Terrain bleibt Vanilla.
+
+### Waldzonen
+
+Keine eigenen Biome, sondern weiche Gewichte innerhalb des Bioms (`WhisperingWoodsZones`):
+
+- **Outer Woods**: Rand des Waldes, weniger dicht, kleine/mittlere Bäume, Vanilla-Fichten.
+- **Deepwood**: wächst mit dem Abstand zum Biomrand, von einer großräumigen Noise moduliert. Riesenbäume, große Farne, dunklere Bodenakzente.
+- **Hidden Groves**: kleine Lichtungen, wo eine feine Noise Spitzen hat. Kaum Bäume, viel hohes Gras, häufiger Bäche.
+
+Jedes Feature macht `count` Versuche pro Chunk; jeder Versuch bleibt mit der Wahrscheinlichkeit seiner Zone erhalten.
+
+### Atmosphäre (nur Client)
+
+| Was | Wo |
+|---|---|
+| Steuerung, sanftes Ein-/Ausblenden („presence“) | `client/WhisperingWoodsAmbience.java` |
+| Bodennebel (eigener Renderer, keine Partikel) | `client/renderer/ForestMistRenderer.java` – Dichte: `MAX_ALPHA`, `MAX_WISPS`, `SPAWN_RATE`; Farbe `#788F85` |
+| Glitzerlichter | `client/particle/WhisperingWoodsParticles.java` (Häufigkeit: `GLIMMER_RATE`), `GlimmerParticle` (Helligkeit: `MAX_ALPHA`, `GLOW_ALPHA`, `GLOW_SIZE`) |
+| Dunkles Laub der Bäume | Block `valor:whispering_leaves` (`ValorBlocks`), Färbung `ValorBlockColors.WHISPERING_LEAVES`; ersetzt beim Platzieren die Fichtenblätter der `.nbt`-Bäume (`TemplateTreeProcessor`), die Originaldateien bleiben unverändert |
+| Vögel und Krähen (Zeitsteuerung) | `client/resources/sounds/WhisperingWoodsSoundHandler.java` |
+| Sound-Clips | `resources/assets/valor/sounds/ambient/whispering_woods/` (je ~15 s, aus den Originalaufnahmen verlustfrei geschnitten) |
+
+**Testen:** Biome und Features wirken nur in **neu generierten Chunks**, am besten in einer neuen Welt. Neue Welt → *Weltoptionen* → Welttyp **Einzelnes Biom** → *Flüsterwald* (Zonen-Ränder fehlen dort, alles ist Deepwood/Groves), oder in einer normalen neuen Welt `/locate biome valor:whispering_woods`.
 
 ## License
 

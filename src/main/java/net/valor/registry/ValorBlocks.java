@@ -1,11 +1,15 @@
 package net.valor.registry;
 
 import java.util.function.Function;
+import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.valor.Valor;
 
@@ -21,6 +25,14 @@ import net.valor.Valor;
 public final class ValorBlocks {
 
 	// ---- Blocks go here ------------------------------------------------------------------
+
+	/**
+	 * Dark, cool-green spruce foliage of the Whispering Woods trees. Same behavior as spruce leaves
+	 * (decay, light, sapling drops); the color comes from a fixed tint, like vanilla's spruce and birch
+	 * leaves, so it looks the same wherever the block is.
+	 */
+	public static final Block WHISPERING_LEAVES = register("whispering_leaves", LeavesBlock::new,
+			BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_LEAVES));
 
 	private ValorBlocks() {}
 
@@ -44,6 +56,10 @@ public final class ValorBlocks {
 		return Registry.register(BuiltInRegistries.BLOCK, Valor.id(name), factory.apply(properties));
 	}
 
-	/** Forces class loading so all static fields get registered. */
-	public static void init() {}
+	/** Registers the blocks and their vanilla interactions (fire, composter). */
+	public static void init() {
+		// Same values as vanilla leaves (FireBlock#bootStrap, ComposterBlock#bootStrap).
+		FlammableBlockRegistry.getDefaultInstance().add(WHISPERING_LEAVES, 30, 60);
+		CompostingChanceRegistry.INSTANCE.add(WHISPERING_LEAVES, 0.3F);
+	}
 }

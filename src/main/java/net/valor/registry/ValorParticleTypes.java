@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.valor.Valor;
 
@@ -22,6 +23,9 @@ public final class ValorParticleTypes {
 	/** Tiny tinted glitter that trails an {@link #ECHO_NOTE}. Uses vanilla's end rod sprites. */
 	public static final ParticleType<ColorParticleOption> ECHO_SPARKLE = register("echo_sparkle",
 			FabricParticleTypes.complex(ColorParticleOption::codec, ColorParticleOption::streamCodec));
+
+	/** Tiny drifting point of light in the Whispering Woods. Uses vanilla's end rod sprites and a soft glow. */
+	public static final SimpleParticleType GLIMMER = register("glimmer", FabricParticleTypes.simple());
 
 	private ValorParticleTypes() {}
 

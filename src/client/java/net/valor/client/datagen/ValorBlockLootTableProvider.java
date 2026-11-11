@@ -4,6 +4,8 @@ import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.block.Blocks;
+import net.valor.registry.ValorBlocks;
 
 /**
  * Block loot tables (what a block drops when broken).
@@ -18,5 +20,7 @@ public final class ValorBlockLootTableProvider extends FabricBlockLootTableProvi
 
 	@Override
 	public void generate() {
+		// Like spruce leaves: itself with shears/Silk Touch, otherwise spruce saplings and sticks.
+		add(ValorBlocks.WHISPERING_LEAVES, block -> createLeavesDrops(block, Blocks.SPRUCE_SAPLING, NORMAL_LEAVES_SAPLING_CHANCES));
 	}
 }

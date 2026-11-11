@@ -12,5 +12,6 @@ public final class ValorParticleProviders {
 		ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
 		registry.register(ValorParticleTypes.ECHO_NOTE, EchoNoteParticle.Provider::new);
 		registry.register(ValorParticleTypes.ECHO_SPARKLE, EchoSparkleParticle.Provider::new);
+		registry.register(ValorParticleTypes.GLIMMER, GlimmerParticle.Provider::new);
 	}
 }

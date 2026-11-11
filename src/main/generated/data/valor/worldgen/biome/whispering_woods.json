@@ -10,7 +10,7 @@
   "effects": {
     "fog_color": 9347995,
     "foliage_color": 3099446,
-    "grass_color": 4153142,
+    "grass_color": 3164972,
     "mood_sound": {
       "block_search_extent": 8,
       "offset": 2.0,
@@ -85,15 +85,19 @@
     [
       "minecraft:glow_lichen",
       "valor:moss_patch_whispering_woods",
-      "minecraft:patch_large_fern",
-      "minecraft:patch_grass_taiga",
-      "minecraft:brown_mushroom_old_growth",
-      "minecraft:red_mushroom_old_growth",
+      "valor:patch_large_fern_whispering_woods",
+      "valor:patch_tall_grass_whispering_woods",
+      "valor:patch_grass_whispering_woods",
+      "valor:brown_mushroom_whispering_woods",
+      "valor:red_mushroom_whispering_woods",
       "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin",
       "minecraft:patch_berry_common",
-      "valor:patch_tall_grass_whispering_woods",
-      "valor:trees_whispering_woods"
+      "valor:whispering_tree_3",
+      "valor:whispering_tree_1",
+      "valor:whispering_tree_4",
+      "valor:whispering_tree_2",
+      "valor:spruce_whispering_woods"
     ],
     [
       "minecraft:freeze_top_layer"

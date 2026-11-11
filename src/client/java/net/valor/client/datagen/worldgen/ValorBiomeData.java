@@ -5,7 +5,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
-import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.sounds.Musics;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -31,7 +30,9 @@ import net.valor.world.level.biome.ValorBiomes;
 public final class ValorBiomeData {
 
 	// Whispering Woods colors: noticeably more muted and darker than vanilla forests, but readable by day.
-	private static final int WHISPERING_WOODS_GRASS = 0x3F5F36;
+	// Grass also tints short/tall grass and ferns. Spruce-type leaves ignore the foliage color; the trees here
+	// use Whispering Leaves, which carry their own tint (see ValorBlockColors).
+	private static final int WHISPERING_WOODS_GRASS = 0x304B2C;
 	private static final int WHISPERING_WOODS_FOLIAGE = 0x2F4B36;
 	private static final int WHISPERING_WOODS_WATER = 0x4B6E73;
 	private static final int WHISPERING_WOODS_WATER_FOG = 0x2E4448;
@@ -47,12 +48,14 @@ public final class ValorBiomeData {
 	}
 
 	/**
-	 * Ancient, overgrown forest: dense hand-built spruce trees, mossy and rooty ground, small streams.
+	 * Ancient, dense forest: hand-built spruce giants, dark grass with ferns and tall grass, small streams.
 	 * <p>
-	 * Ambient sound: there is no fitting vanilla bird/forest ambience, and Valor has no audio for it
-	 * yet. When there is, register a sound event in {@code ValorSounds} and add it here via
-	 * {@code .ambientAdditionsSound(new AmbientAdditionsSettings(sound, 0.0111))} (vanilla's usual
-	 * rare-tick chance) or {@code .ambientLoopSound(sound)} for a quiet constant bed.
+	 * Ambience: birds and crows, ground mist and glimmers are client-side effects
+	 * ({@code WhisperingWoodsAmbience}), since they need fades, day/night and placement near the ground.
+	 * A quiet wind/leaves bed is not included: vanilla has no fitting Overworld loop (its ambient loops are
+	 * Nether biomes). Once there is a recording, register a sound event in {@code ValorSounds} and add it
+	 * here via {@code .ambientLoopSound(sound)}; vanilla then loops it in this biome and fades it in and out
+	 * at the border by itself.
 	 */
 	private static Biome whisperingWoods(HolderGetter<PlacedFeature> placed, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
 		MobSpawnSettings.Builder spawns = new MobSpawnSettings.Builder();
@@ -71,8 +74,10 @@ public final class ValorBiomeData {
 		BiomeDefaultFeatures.addDefaultSprings(generation);
 		BiomeDefaultFeatures.addSurfaceFreezing(generation);
 
+		// Streams: mostly in the Hidden Groves.
 		generation.addFeature(GenerationStep.Decoration.LAKES, ValorPlacedFeatures.STREAM_WHISPERING_WOODS);
 
+		// Ground: mostly grass. Podzol, coarse dirt and rooted dirt only as small accents.
 		BiomeDefaultFeatures.addMossyStoneBlock(generation);
 		generation.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, ValorPlacedFeatures.DISK_PODZOL);
 		generation.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, ValorPlacedFeatures.DISK_COARSE_DIRT);
@@ -83,16 +88,22 @@ public final class ValorBiomeData {
 		generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
 		generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_GRAVEL);
 
-		// Ground vegetation first, trees last, so the undergrowth also covers the ground under the canopies.
+		// Undergrowth first, trees last, so it also covers the ground under the canopies.
+		// Densities per forest zone (Outer Woods, Deepwood, Hidden Groves) are set in ValorPlacedFeatures.
 		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.MOSS_PATCH_WHISPERING_WOODS);
-		BiomeDefaultFeatures.addFerns(generation);
-		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_TAIGA);
-		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_OLD_GROWTH);
-		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_OLD_GROWTH);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.PATCH_LARGE_FERN_WHISPERING_WOODS);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.PATCH_TALL_GRASS_WHISPERING_WOODS);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.PATCH_GRASS_WHISPERING_WOODS);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.BROWN_MUSHROOM_WHISPERING_WOODS);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.RED_MUSHROOM_WHISPERING_WOODS);
 		BiomeDefaultFeatures.addDefaultExtraVegetation(generation);
 		BiomeDefaultFeatures.addCommonBerryBushes(generation);
-		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.PATCH_TALL_GRASS_WHISPERING_WOODS);
-		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.TREES_WHISPERING_WOODS);
+		// Biggest trees first, vanilla spruces last as gap fillers.
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.WHISPERING_TREE_3);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.WHISPERING_TREE_1);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.WHISPERING_TREE_4);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.WHISPERING_TREE_2);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.SPRUCE_WHISPERING_WOODS);
 
 		BiomeSpecialEffects effects = new BiomeSpecialEffects.Builder()
 				.grassColorOverride(WHISPERING_WOODS_GRASS)

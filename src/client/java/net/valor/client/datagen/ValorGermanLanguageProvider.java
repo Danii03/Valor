@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
+import net.valor.registry.ValorBlocks;
 import net.valor.registry.ValorItems;
 
 /**
@@ -20,8 +21,11 @@ public final class ValorGermanLanguageProvider extends FabricLanguageProvider {
 
 	@Override
 	public void generateTranslations(HolderLookup.Provider registries, TranslationBuilder builder) {
+		builder.add(ValorBlocks.WHISPERING_LEAVES, "Flüsterlaub");
 		builder.add(ValorItems.ECHO_FLUTE, "Echoflöte");
 		builder.add("screen.valor.echo_flute", "Echoflöte");
 		builder.add("biome.valor.whispering_woods", "Flüsterwald");
+		builder.add("subtitles.valor.ambient.whispering_woods.birds", "Vögel zwitschern");
+		builder.add("subtitles.valor.ambient.whispering_woods.crows", "Krähen krächzen");
 	}
 }

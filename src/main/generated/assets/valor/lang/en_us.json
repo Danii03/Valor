@@ -1,5 +1,8 @@
 {
   "biome.valor.whispering_woods": "Whispering Woods",
+  "block.valor.whispering_leaves": "Whispering Leaves",
   "item.valor.echo_flute": "Echo Flute",
-  "screen.valor.echo_flute": "Echo Flute"
+  "screen.valor.echo_flute": "Echo Flute",
+  "subtitles.valor.ambient.whispering_woods.birds": "Birds chirp",
+  "subtitles.valor.ambient.whispering_woods.crows": "Crows caw"
 }

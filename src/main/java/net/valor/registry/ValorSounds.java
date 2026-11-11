@@ -21,6 +21,11 @@ public final class ValorSounds {
 
 	// ---- Sounds go here ------------------------------------------------------------------
 
+	/** Birdsong in the Whispering Woods. Several clips cut from one recording; played by the client's ambience handler. */
+	public static final SoundEvent AMBIENT_WHISPERING_WOODS_BIRDS = register("ambient.whispering_woods.birds");
+	/** Distant crows in the Whispering Woods. Much rarer than the birds. */
+	public static final SoundEvent AMBIENT_WHISPERING_WOODS_CROWS = register("ambient.whispering_woods.crows");
+
 	private ValorSounds() {}
 
 	private static SoundEvent register(String name) {

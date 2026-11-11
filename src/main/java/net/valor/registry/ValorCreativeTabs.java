@@ -21,6 +21,10 @@ public final class ValorCreativeTabs {
 	public static void init() {
 		// ---- Creative tab placements go here ---------------------------------------------
 
+		// Leaves: next to the vanilla spruce leaves.
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.NATURAL_BLOCKS).register(entries ->
+				entries.addAfter(Items.SPRUCE_LEAVES, ValorBlocks.WHISPERING_LEAVES));
+
 		// Instruments: after the goat horns, before the music discs.
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries ->
 				entries.addBefore(Items.MUSIC_DISC_13, ValorItems.ECHO_FLUTE));

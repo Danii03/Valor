@@ -2,8 +2,8 @@
   "feature": "minecraft:patch_tall_grass",
   "placement": [
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 2
+      "type": "minecraft:count",
+      "count": 2
     },
     {
       "type": "minecraft:in_square"
@@ -11,6 +11,12 @@
     {
       "type": "minecraft:heightmap",
       "heightmap": "MOTION_BLOCKING"
+    },
+    {
+      "type": "valor:whispering_woods_zone",
+      "deepwood": 0.4,
+      "hidden_grove": 1.0,
+      "outer_woods": 0.7
     },
     {
       "type": "minecraft:biome"

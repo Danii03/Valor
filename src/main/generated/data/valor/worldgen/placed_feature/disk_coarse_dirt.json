@@ -3,7 +3,7 @@
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 2
+      "chance": 4
     },
     {
       "type": "minecraft:in_square"
@@ -11,6 +11,12 @@
     {
       "type": "minecraft:heightmap",
       "heightmap": "OCEAN_FLOOR_WG"
+    },
+    {
+      "type": "valor:whispering_woods_zone",
+      "deepwood": 0.8,
+      "hidden_grove": 0.3,
+      "outer_woods": 0.6
     },
     {
       "type": "minecraft:biome"

@@ -3,6 +3,7 @@
 	"package": "net.valor.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"MultiNoiseBiomeSourceMixin",
 		"OverworldBiomeBuilderMixin"
 	],
 	"injectors": {

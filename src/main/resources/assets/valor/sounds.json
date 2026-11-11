@@ -1,1 +1,22 @@
-{}
+{
+  "ambient.whispering_woods.birds": {
+    "sounds": [
+      {"name": "valor:ambient/whispering_woods/birds1", "stream": true},
+      {"name": "valor:ambient/whispering_woods/birds2", "stream": true},
+      {"name": "valor:ambient/whispering_woods/birds3", "stream": true},
+      {"name": "valor:ambient/whispering_woods/birds4", "stream": true},
+      {"name": "valor:ambient/whispering_woods/birds5", "stream": true},
+      {"name": "valor:ambient/whispering_woods/birds6", "stream": true}
+    ],
+    "subtitle": "subtitles.valor.ambient.whispering_woods.birds"
+  },
+  "ambient.whispering_woods.crows": {
+    "sounds": [
+      {"name": "valor:ambient/whispering_woods/crows1", "stream": true},
+      {"name": "valor:ambient/whispering_woods/crows2", "stream": true},
+      {"name": "valor:ambient/whispering_woods/crows3", "stream": true},
+      {"name": "valor:ambient/whispering_woods/crows4", "stream": true}
+    ],
+    "subtitle": "subtitles.valor.ambient.whispering_woods.crows"
+  }
+}

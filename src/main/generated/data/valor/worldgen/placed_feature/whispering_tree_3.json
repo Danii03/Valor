@@ -1,21 +1,9 @@
 {
-  "feature": "valor:trees_whispering_woods",
+  "feature": "valor:whispering_tree_3",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": {
-        "type": "minecraft:weighted_list",
-        "distribution": [
-          {
-            "data": 11,
-            "weight": 6
-          },
-          {
-            "data": 2,
-            "weight": 1
-          }
-        ]
-      }
+      "count": 3
     },
     {
       "type": "minecraft:in_square"
@@ -27,6 +15,12 @@
     {
       "type": "minecraft:heightmap",
       "heightmap": "OCEAN_FLOOR"
+    },
+    {
+      "type": "valor:whispering_woods_zone",
+      "deepwood": 0.8,
+      "hidden_grove": 0.0,
+      "outer_woods": 0.06
     },
     {
       "type": "minecraft:biome"

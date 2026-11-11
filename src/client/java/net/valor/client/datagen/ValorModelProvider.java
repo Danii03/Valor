@@ -5,6 +5,10 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
+import net.minecraft.data.models.model.TextureMapping;
+import net.minecraft.data.models.model.TexturedModel;
+import net.minecraft.world.level.block.Blocks;
+import net.valor.registry.ValorBlocks;
 import net.valor.registry.ValorItems;
 
 /**
@@ -27,6 +31,9 @@ public final class ValorModelProvider extends FabricModelProvider {
 
 	@Override
 	public void generateBlockStateModels(BlockModelGenerators blocks) {
+		// Vanilla's grey spruce leaves texture with the leaves template (tint index 0); the color is a tint.
+		blocks.createTrivialBlock(ValorBlocks.WHISPERING_LEAVES, TexturedModel.createDefault(
+				block -> TextureMapping.cube(TextureMapping.getBlockTexture(Blocks.SPRUCE_LEAVES)), ModelTemplates.LEAVES));
 	}
 
 	@Override

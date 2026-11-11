@@ -4,6 +4,8 @@ import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.BlockTags;
+import net.valor.registry.ValorBlocks;
 
 /**
  * Block tag contents – both Valor's own tags and additions to vanilla tags.
@@ -24,5 +26,7 @@ public final class ValorBlockTagProvider extends FabricTagProvider.BlockTagProvi
 
 	@Override
 	protected void addTags(HolderLookup.Provider registries) {
+		getOrCreateTagBuilder(BlockTags.LEAVES).add(ValorBlocks.WHISPERING_LEAVES);
+		getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_HOE).add(ValorBlocks.WHISPERING_LEAVES);
 	}
 }

@@ -1,0 +1,29 @@
+{
+  "feature": "valor:whispering_tree_1",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 9
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:surface_water_depth_filter",
+      "max_water_depth": 0
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "OCEAN_FLOOR"
+    },
+    {
+      "type": "valor:whispering_woods_zone",
+      "deepwood": 0.9,
+      "hidden_grove": 0.06,
+      "outer_woods": 0.4
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

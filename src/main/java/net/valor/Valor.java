@@ -9,7 +9,9 @@ import net.valor.registry.ValorFeatures;
 import net.valor.registry.ValorStructureProcessorTypes;
 import net.valor.registry.ValorItems;
 import net.valor.registry.ValorParticleTypes;
+import net.valor.registry.ValorPlacementModifierTypes;
 import net.valor.registry.ValorSounds;
+import net.valor.world.level.biome.WhisperingWoodsRegions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +32,11 @@ public final class Valor implements ModInitializer {
 		ValorItems.init();
 		ValorParticleTypes.init();
 		ValorStructureProcessorTypes.init();
+		ValorPlacementModifierTypes.init();
 		ValorFeatures.init();
 		ValorCreativeTabs.init();
 		ValorNetworking.init();
+		WhisperingWoodsRegions.init();
 
 		LOGGER.info("Valor initialized");
 	}

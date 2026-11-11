@@ -9,6 +9,16 @@
       "type": "minecraft:in_square"
     },
     {
+      "type": "minecraft:heightmap",
+      "heightmap": "WORLD_SURFACE_WG"
+    },
+    {
+      "type": "valor:whispering_woods_zone",
+      "deepwood": 0.3,
+      "hidden_grove": 1.0,
+      "outer_woods": 0.5
+    },
+    {
       "type": "minecraft:biome"
     }
   ]

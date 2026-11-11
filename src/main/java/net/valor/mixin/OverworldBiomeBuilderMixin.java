@@ -12,17 +12,21 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Adds the Whispering Woods to the Overworld the same way vanilla places its biome variants.
+ * Adds the Whispering Woods to the Overworld's biome parameter list the same way vanilla adds biome
+ * variants, so the biome source, features, structures and {@code /locate} know about it.
  * <p>
  * Vanilla splits most "middle" climate slots by weirdness: negative weirdness gets the normal
  * biome, positive weirdness gets a variant (e.g. Old Growth Pine Taiga next to Old Growth Spruce
  * Taiga). The temperate, very humid slot has no variant, so it is Dark Forest on both sides. We
- * fill that empty variant slot: Dark Forest keeps the negative half, the Whispering Woods take
- * the positive half. No other biome loses any area, and the terrain (hills, rivers, coasts) is
- * unchanged.
+ * register the Whispering Woods as that missing variant.
  * <p>
- * Fabric API has no Overworld biome API, and TerraBlender would be a new dependency, so this
- * small injection is the least invasive option.
+ * Where the biome actually appears is decided afterwards by {@code MultiNoiseBiomeSourceMixin}: it
+ * hands the <i>whole</i> Dark Forest slot to either Dark Forest or Whispering Woods, depending on a
+ * large-scale region noise (see {@code WhisperingWoodsRegions}). No other biome loses any area, and the
+ * terrain (hills, rivers, coasts) is unchanged.
+ * <p>
+ * Fabric API has no Overworld biome API, and TerraBlender would be a new dependency, so these two
+ * small injections are the least invasive option.
  */
 @Mixin(OverworldBiomeBuilder.class)
 abstract class OverworldBiomeBuilderMixin {

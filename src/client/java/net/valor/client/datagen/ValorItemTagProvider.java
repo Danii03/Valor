@@ -4,6 +4,8 @@ import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.ItemTags;
+import net.valor.registry.ValorBlocks;
 
 /**
  * Item tag contents – both Valor's own tags and additions to vanilla tags
@@ -17,5 +19,6 @@ public final class ValorItemTagProvider extends FabricTagProvider.ItemTagProvide
 
 	@Override
 	protected void addTags(HolderLookup.Provider registries) {
+		getOrCreateTagBuilder(ItemTags.LEAVES).add(ValorBlocks.WHISPERING_LEAVES.asItem());
 	}
 }
