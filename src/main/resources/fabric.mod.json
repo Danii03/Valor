@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "valor",
+	"version": "${version}",
+	"name": "Valor",
+	"description": "A vanilla-style content update for Minecraft.",
+	"authors": [
+		"Danii"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/valor/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.valor.Valor"
+		],
+		"client": [
+			"net.valor.client.ValorClient"
+		],
+		"fabric-datagen": [
+			"net.valor.client.datagen.ValorDataGenerator"
+		]
+	},
+	"mixins": [
+		"valor.mixins.json",
+		{
+			"config": "valor.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
