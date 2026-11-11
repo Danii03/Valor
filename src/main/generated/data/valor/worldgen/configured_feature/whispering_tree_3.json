@@ -1,0 +1,7 @@
+{
+  "type": "valor:template_tree",
+  "config": {
+    "max_ground_step": 3,
+    "template": "valor:whispering_woods/whispering_tree_3"
+  }
+}

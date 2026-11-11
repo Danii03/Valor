@@ -1,0 +1,12 @@
+{
+  "type": "valor:stream",
+  "config": {
+    "length": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 28,
+      "min_inclusive": 12
+    },
+    "max_bank_height": 3,
+    "wide_chance": 0.3
+  }
+}

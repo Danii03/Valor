@@ -1,0 +1,8 @@
+{
+  "type": "valor:template_tree",
+  "config": {
+    "max_ground_step": 4,
+    "requires_slope_or_water": true,
+    "template": "valor:whispering_woods/whispering_tree_4"
+  }
+}
