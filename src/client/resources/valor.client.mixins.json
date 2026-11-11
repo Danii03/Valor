@@ -2,7 +2,10 @@
 	"required": true,
 	"package": "net.valor.client.mixin",
 	"compatibilityLevel": "JAVA_21",
-	"client": [],
+	"client": [
+		"GuiMixin",
+		"ItemInHandRendererMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	},

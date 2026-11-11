@@ -13,6 +13,8 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.valor.client.particle.EchoFluteParticles;
+import net.valor.client.renderer.EchoFluteFirstPersonLayout;
+import net.valor.client.renderer.EchoFluteHandAnimation;
 import net.valor.network.ServerboundPlayEchoFluteNotePayload;
 import net.valor.registry.ValorItems;
 import net.valor.world.item.EchoFluteNote;
@@ -109,6 +111,9 @@ public final class EchoFluteScreen extends Screen {
 		this.panelRight = this.staffRight + sideExtent;
 		this.panelTop = this.staffBottom - STAFF_HEIGHT - PANEL_PADDING_Y;
 		this.panelBottom = this.staffBottom + PANEL_PADDING_Y + 1;
+
+		// The raised flute (first person) sits right above the panel.
+		EchoFluteFirstPersonLayout.setPanelTop(this.panelTop / (float) this.height);
 	}
 
 	private int lineY(int noteIndex) {
@@ -168,6 +173,7 @@ public final class EchoFluteScreen extends Screen {
 				note.sound().value(), SoundSource.RECORDS, 1.0F, note.pitch(), false);
 
 		EchoFluteParticles.spawn(player, this.hand, note);
+		EchoFluteHandAnimation.onNotePlayed(note);
 
 		// The server relays sound and particles to other nearby players.
 		if (ClientPlayNetworking.canSend(ServerboundPlayEchoFluteNotePayload.TYPE)) {
@@ -190,6 +196,15 @@ public final class EchoFluteScreen extends Screen {
 		LocalPlayer player = this.minecraft.player;
 		if (player == null || !player.getItemInHand(this.hand).is(ValorItems.ECHO_FLUTE)) {
 			this.onClose();
+		}
+	}
+
+	/** Ends the item-use state, which lowers the flute again (first person) and drops the arm pose (third person). */
+	@Override
+	public void removed() {
+		LocalPlayer player = this.minecraft.player;
+		if (player != null && EchoFluteHandAnimation.isPlaying(player)) {
+			this.minecraft.gameMode.releaseUsingItem(player);
 		}
 	}
 

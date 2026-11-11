@@ -38,6 +38,8 @@ src/
         ├── ValorRenderLayers.java        Transparenz (cutout/translucent) für Blöcke
         ├── gui/screens/                  Eigene Interfaces (z. B. EchoFluteScreen)
         ├── particle/                     Partikel-Klassen und -Effekte
+        ├── renderer/                     Eigene Render-Logik (z. B. Echoflöte in der Ego-Perspektive)
+        ├── mixin/                        Eingriffe in Vanilla-Client-Code
         ├── network/                      Empfang von Server-Paketen
         └── datagen/                      Ein Provider pro Datentyp
 ```

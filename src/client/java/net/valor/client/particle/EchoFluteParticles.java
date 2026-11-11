@@ -11,22 +11,21 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.valor.client.renderer.EchoFluteFirstPersonLayout;
 import net.valor.registry.ValorParticleTypes;
 import net.valor.world.item.EchoFluteNote;
 
 /**
  * Spawns the rising note effect at the Echo Flute held by a player.
  * <p>
- * In first person the position is relative to the camera, so the note appears to the side of
- * the view (on the flute's side) and never in the middle of the screen. For everyone else
+ * In first person the notes rise from the upper edge of the raised flute, on the flute hand's side,
+ * so they pass beside the view center instead of through it. For everyone else
  * (third person, other players) it is placed in front of the player's mouth on the flute's side.
  */
 public final class EchoFluteParticles {
 
-	/** Distances in blocks. First person values are relative to the eye and view direction. */
-	private static final double FIRST_PERSON_FORWARD = 0.7;
-	private static final double FIRST_PERSON_SIDE = 0.32;
-	private static final double FIRST_PERSON_DOWN = 0.12;
+	/** Distance of first-person particles from the eye, in blocks. */
+	private static final double FIRST_PERSON_DISTANCE = 0.7;
 	/** Notes in first person are much closer to the camera, so they are drawn smaller and slower. */
 	private static final float FIRST_PERSON_SCALE = 0.55F;
 
@@ -64,11 +63,16 @@ public final class EchoFluteParticles {
 		Vec3 drift;
 		float scale;
 		if (firstPerson) {
+			// Start at the raised flute's upper edge, as seen on screen. The world uses the player's FOV
+			// (hands always use 70°), so the screen position is converted with the world FOV.
 			Vec3 look = player.getViewVector(partialTick);
 			Vec3 viewUp = right.cross(look).normalize();
-			origin = eye.add(look.scale(FIRST_PERSON_FORWARD))
-					.add(right.scale(FIRST_PERSON_SIDE * side))
-					.subtract(viewUp.scale(FIRST_PERSON_DOWN));
+			float[] anchor = EchoFluteFirstPersonLayout.particleAnchorNdc();
+			double tanHalfFov = Math.tan(Math.toRadians(minecraft.options.fov().get() / 2.0));
+			double aspect = minecraft.getWindow().getWidth() / (double) Math.max(1, minecraft.getWindow().getHeight());
+			double sideways = anchor[0] * side * FIRST_PERSON_DISTANCE * tanHalfFov * aspect;
+			double upwards = anchor[1] * FIRST_PERSON_DISTANCE * tanHalfFov;
+			origin = eye.add(look.scale(FIRST_PERSON_DISTANCE)).add(right.scale(sideways)).add(viewUp.scale(upwards));
 			drift = look.scale(DRIFT_SPEED);
 			scale = FIRST_PERSON_SCALE;
 		} else {

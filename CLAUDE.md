@@ -19,6 +19,7 @@ Vanilla-style content mod for Fabric 1.21.1 with **Mojang mappings** (`ResourceL
 - Networking: payload records in `net.valor.network` named vanilla-style (`Serverbound…Payload` / `Clientbound…Payload`), registered in `ValorNetworking`; client receivers in `net.valor.client.network.ValorClientNetworking`. Validate and rate-limit (`PlayerRateLimiter`) every serverbound packet.
 - Effects triggered by a player: the acting client plays them instantly; the server relays to *other* players only (`Level.playSound(player, …)` excludes the player, S2C payloads skip them) – never double-spawn.
 - Particles: types in `registry/ValorParticleTypes`, sprite JSON in `assets/valor/particles/`, client classes + providers in `net.valor.client.particle`. Prefer vanilla sprites and `ColorParticleOption` for tinting.
+- Item "playing"/holding states use vanilla item use (`startUsingItem` + `UseAnim`) so they sync to all players and give third-person arm poses for free. First-person poses go through `ItemInHandRendererMixin` → `net.valor.client.renderer`. The Echo Flute's on-screen layout constants were tuned with in-game screenshots; re-check visually after changing them.
 - Registry names: lowercase snake_case, vanilla-style (`ruby_block`, not `block_ruby`).
 - Tabs for indentation (see `.editorconfig`).
 
