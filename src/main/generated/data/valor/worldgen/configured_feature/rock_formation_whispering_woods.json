@@ -1,0 +1,70 @@
+{
+  "type": "valor:rock_formation",
+  "config": {
+    "boulders": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 4,
+      "min_inclusive": 1
+    },
+    "flat_ground_chance": 0.4,
+    "moss_chance": 0.2,
+    "radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 2.3,
+      "min_inclusive": 1.2
+    },
+    "rock": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "minecraft:stone"
+          },
+          "weight": 5
+        },
+        {
+          "data": {
+            "Name": "minecraft:cobblestone"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "minecraft:mossy_cobblestone"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "minecraft:andesite"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "spread": 4,
+    "top_rock": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "minecraft:mossy_cobblestone"
+          },
+          "weight": 5
+        },
+        {
+          "data": {
+            "Name": "minecraft:stone"
+          },
+          "weight": 2
+        },
+        {
+          "data": {
+            "Name": "minecraft:moss_block"
+          },
+          "weight": 1
+        }
+      ]
+    }
+  }
+}

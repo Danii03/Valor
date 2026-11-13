@@ -28,5 +28,9 @@ public final class ValorCreativeTabs {
 		// Instruments: after the goat horns, before the music discs.
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries ->
 				entries.addBefore(Items.MUSIC_DISC_13, ValorItems.ECHO_FLUTE));
+
+		// Altar: among the functional blocks, after the lectern (it holds an item the same way).
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries ->
+				entries.addAfter(Items.LECTERN, ValorBlocks.ECHO_FLUTE_ALTAR));
 	}
 }

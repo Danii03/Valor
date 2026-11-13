@@ -1,0 +1,45 @@
+{
+  "type": "valor:template_tree",
+  "config": {
+    "blend_terrain": true,
+    "clearance": 2,
+    "ground_cover": {
+      "chance": 0.6,
+      "radius": 3,
+      "state": {
+        "type": "minecraft:weighted_state_provider",
+        "entries": [
+          {
+            "data": {
+              "Name": "minecraft:podzol",
+              "Properties": {
+                "snowy": "false"
+              }
+            },
+            "weight": 4
+          },
+          {
+            "data": {
+              "Name": "minecraft:coarse_dirt"
+            },
+            "weight": 2
+          },
+          {
+            "data": {
+              "Name": "minecraft:rooted_dirt"
+            },
+            "weight": 2
+          },
+          {
+            "data": {
+              "Name": "minecraft:moss_block"
+            },
+            "weight": 1
+          }
+        ]
+      }
+    },
+    "max_ground_step": 3,
+    "template": "valor:whispering_woods/whispering_tree_5"
+  }
+}

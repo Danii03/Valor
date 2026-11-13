@@ -13,7 +13,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.valor.registry.ValorBlocks;
 import net.valor.registry.ValorStructureProcessorTypes;
-import net.valor.world.level.levelgen.feature.TemplateTreeFeature;
+import net.valor.world.level.levelgen.feature.TerrainFitting;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
  * </ul>
  * Also turns the template's spruce leaves into {@link ValorBlocks#WHISPERING_LEAVES} while placing, so the
  * original {@code .nbt} files stay untouched. The templates were built by hand, so their leaves are
- * persistent; placed leaves are made non-persistent and keep their stored distance (at most 3 in all
+ * persistent; placed leaves are made non-persistent and keep their stored distance (at most 4 in all
  * templates), so they decay like a natural tree's when the trunk is cut.
  * <p>
  * Use together with {@code BlockIgnoreProcessor.STRUCTURE_AND_AIR}, so air in the template is skipped.
@@ -52,7 +52,7 @@ public final class TemplateTreeProcessor extends StructureProcessor {
 					|| !existing.getFluidState().isEmpty();
 			return blocked ? null : current;
 		}
-		return existing.isAir() || TemplateTreeFeature.isPlant(existing) ? current : null;
+		return existing.isAir() || TerrainFitting.isPlant(existing) ? current : null;
 	}
 
 	private static BlockState whisperingLeaves(BlockState spruceLeaves) {

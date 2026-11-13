@@ -1,8 +1,10 @@
 {
   "biome.valor.whispering_woods": "Whispering Woods",
+  "block.valor.echo_flute_altar": "Echo Flute Altar",
   "block.valor.whispering_leaves": "Whispering Leaves",
   "item.valor.echo_flute": "Echo Flute",
   "screen.valor.echo_flute": "Echo Flute",
   "subtitles.valor.ambient.whispering_woods.birds": "Birds chirp",
-  "subtitles.valor.ambient.whispering_woods.crows": "Crows caw"
+  "subtitles.valor.ambient.whispering_woods.crows": "Crows caw",
+  "subtitles.valor.block.echo_flute_altar.crackle": "Soul fire crackles"
 }

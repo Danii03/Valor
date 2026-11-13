@@ -3,6 +3,7 @@ package net.valor.world.level.levelgen.feature;
 import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,9 +15,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,6 +31,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.valor.Valor;
 import net.valor.world.level.levelgen.feature.configurations.TemplateTreeConfiguration;
+import net.valor.world.level.levelgen.structure.templatesystem.TemplateBlocks;
 import net.valor.world.level.levelgen.structure.templatesystem.TemplateTreeProcessor;
 
 /**
@@ -48,6 +48,11 @@ import net.valor.world.level.levelgen.structure.templatesystem.TemplateTreeProce
  *     never carves terrain or neighboring trees.</li>
  *     <li><b>Chunk safe</b>: trees are only placed if they fit in the area a feature may write to.</li>
  * </ul>
+ * Landmark trees can additionally ask for {@linkplain TemplateTreeConfiguration#clearance() room of their own}
+ * and for {@linkplain TemplateTreeConfiguration#blendTerrain() terrain blending}: the decorative root blocks
+ * at the trunk's foot get soil beneath them, the ground around the foot rises into a gentle mound, and grass
+ * and ferns grow back on it.
+ * <p>
  * Expected to run after the ground vegetation, so undergrowth also grows under canopies.
  */
 public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
@@ -55,11 +60,12 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 	private static final int MAX_GROUND_SEARCH = 40;
 	/** At most this fraction of the logs may end up inside terrain (hillsides); more means a cliff or overhang. */
 	private static final float MAX_EMBEDDED_LOG_FRACTION = 0.2F;
-	private static final int WATER_SEARCH_RADIUS = 6;
-	private static final int SLOPE_SAMPLE_DISTANCE = 4;
-	private static final int SLOPE_MIN_HEIGHT_DIFFERENCE = 2;
-	/** Features may write into the chunk they decorate and its direct neighbors. */
-	private static final int WRITE_MARGIN = 16;
+	/** Terrain blending: how far the mound around the trunk's foot reaches, and how much it may raise the ground. */
+	private static final int MOUND_RADIUS = 3;
+	private static final int MOUND_MAX_RAISE = 2;
+	private static final float MOUND_REGROWTH_CHANCE = 0.45F;
+	/** Clearance: rocks and deadwood are only looked for this high above the base, where they could touch the trunk. */
+	private static final int CLEARANCE_GROUND_HEIGHT = 4;
 
 	private static final Map<StructureTemplate, Shape> SHAPES = Collections.synchronizedMap(new WeakHashMap<>());
 	private static final Set<ResourceLocation> REPORTED_MISSING = ConcurrentHashMap.newKeySet();
@@ -88,11 +94,11 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 			return false;
 		}
 
-		int pivotGround = findGround(level, origin.getX(), origin.getZ(), origin.getY() + 1, MAX_GROUND_SEARCH);
-		if (pivotGround == NO_GROUND) {
+		int pivotGround = TerrainFitting.findGround(level, origin.getX(), origin.getZ(), origin.getY() + 1, MAX_GROUND_SEARCH);
+		if (pivotGround == TerrainFitting.NO_GROUND) {
 			return false;
 		}
-		if (config.requiresSlopeOrWater() && !isNearSlopeOrWater(level, new BlockPos(origin.getX(), pivotGround, origin.getZ()))) {
+		if (config.requiresSlopeOrWater() && !TerrainFitting.isNearSlopeOrWater(level, new BlockPos(origin.getX(), pivotGround, origin.getZ()))) {
 			return false;
 		}
 
@@ -112,8 +118,8 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 			BlockPos local = StructureTemplate.transform(shape.contact().get(i).pos(), mirror, rotation, pivot).subtract(rotatedPivot);
 			int x = origin.getX() + local.getX();
 			int z = origin.getZ() + local.getZ();
-			int ground = findGround(level, x, z, pivotGround + step + 1, 2 * step + 2);
-			if (ground == NO_GROUND || ground == pivotGround + step + 1) {
+			int ground = TerrainFitting.findGround(level, x, z, pivotGround + step + 1, 2 * step + 2);
+			if (ground == TerrainFitting.NO_GROUND || ground == pivotGround + step + 1) {
 				return false; // no soil, water, or a wall of terrain
 			}
 			contactGround[i] = ground;
@@ -125,13 +131,28 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 			return false;
 		}
 
+		// Terrain blending: the decorative roots (stairs, slabs) beside the trunk need ground under them too.
+		List<BlockPos> footingWorld = new ArrayList<>();
+		int[] footingGround = new int[shape.footing().size()];
+		if (config.blendTerrain()) {
+			for (int i = 0; i < shape.footing().size(); i++) {
+				BlockPos local = StructureTemplate.transform(shape.footing().get(i), mirror, rotation, pivot).subtract(rotatedPivot);
+				int x = origin.getX() + local.getX();
+				int z = origin.getZ() + local.getZ();
+				int ground = TerrainFitting.findGround(level, x, z, highestGround + 1, step + 2);
+				if (ground == TerrainFitting.NO_GROUND || highestGround - ground > step) {
+					return false; // a root would hang over water, a rock or a drop
+				}
+				footingGround[i] = ground;
+				footingWorld.add(new BlockPos(x, 0, z));
+				lowestGround = Math.min(lowestGround, ground);
+			}
+		}
+
 		int baseY = highestGround + 1;
 		BlockPos offset = new BlockPos(origin.getX() - rotatedPivot.getX(), baseY - rotatedPivot.getY(), origin.getZ() - rotatedPivot.getZ());
 
-		ChunkPos chunk = new ChunkPos(origin);
-		BoundingBox writable = new BoundingBox(
-				chunk.getMinBlockX() - WRITE_MARGIN, level.getMinBuildHeight(), chunk.getMinBlockZ() - WRITE_MARGIN,
-				chunk.getMaxBlockX() + WRITE_MARGIN, level.getMaxBuildHeight() - 1, chunk.getMaxBlockZ() + WRITE_MARGIN);
+		BoundingBox writable = TerrainFitting.writableArea(level, origin);
 		StructurePlaceSettings settings = new StructurePlaceSettings()
 				.setRotation(rotation)
 				.setMirror(mirror)
@@ -143,21 +164,26 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 				.addProcessor(TemplateTreeProcessor.INSTANCE);
 
 		BoundingBox treeBox = template.getBoundingBox(settings, offset);
-		if (!writable.isInside(treeBox.minX(), treeBox.minY(), treeBox.minZ())
-				|| !writable.isInside(treeBox.maxX(), treeBox.maxY(), treeBox.maxZ())) {
+		int margin = config.blendTerrain() ? MOUND_RADIUS + 1 : 0;
+		if (!writable.isInside(treeBox.minX() - margin, treeBox.minY(), treeBox.minZ() - margin)
+				|| !writable.isInside(treeBox.maxX() + margin, treeBox.maxY(), treeBox.maxZ() + margin)) {
 			return false;
 		}
 		if (!hasRoomForTrunk(level, shape, offset, mirror, rotation, pivot)) {
 			return false;
 		}
+		if (config.clearance() > 0 && !hasClearance(level, treeBox, baseY, config.clearance())) {
+			return false;
+		}
 
 		// Roots on the low side of a slope, so the trunk never floats.
+		Map<Long, Integer> footprint = new HashMap<>();
 		for (int i = 0; i < contactWorld.size(); i++) {
 			BlockState rootState = shape.contact().get(i).state().mirror(mirror).rotate(rotation);
 			BlockPos column = contactWorld.get(i);
 			for (int y = contactGround[i] + 1; y < baseY; y++) {
 				BlockPos pos = new BlockPos(column.getX(), y, column.getZ());
-				if (isAirOrPlant(level.getBlockState(pos))) {
+				if (TerrainFitting.isAirOrPlant(level.getBlockState(pos))) {
 					level.setBlock(pos, rootState, Block.UPDATE_CLIENTS);
 				}
 			}
@@ -166,9 +192,30 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 			if (soilState.is(Blocks.GRASS_BLOCK) || soilState.is(Blocks.DIRT) || soilState.is(Blocks.PODZOL)) {
 				level.setBlock(soil, Blocks.ROOTED_DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
 			}
+			footprint.put(column.asLong(), baseY - 1);
 		}
 
-		return template.placeInWorld(level, offset, offset, settings, random, Block.UPDATE_CLIENTS);
+		List<BlockPos> newSurfaces = new ArrayList<>();
+		if (config.blendTerrain()) {
+			for (int i = 0; i < footingWorld.size(); i++) {
+				BlockPos column = footingWorld.get(i);
+				TerrainFitting.fillSoil(level, column.getX(), column.getZ(), footingGround[i], baseY - 1);
+				footprint.put(column.asLong(), baseY - 1);
+			}
+			newSurfaces.addAll(TerrainFitting.raiseSurroundings(level, random, footprint, MOUND_RADIUS, MOUND_MAX_RAISE, writable));
+		}
+
+		boolean placed = template.placeInWorld(level, offset, offset, settings, random, Block.UPDATE_CLIENTS);
+
+		if (config.blendTerrain() || config.groundCover().isPresent()) {
+			config.groundCover().ifPresent(cover -> TerrainFitting.coverGround(level, random, footprint.keySet(), baseY + 1, cover, writable));
+			TerrainFitting.revegetate(level, random, newSurfaces, MOUND_REGROWTH_CHANCE);
+			int reach = MOUND_RADIUS + 1;
+			TerrainFitting.removeUnsupportedPlants(level, TerrainFitting.clamp(new BoundingBox(
+					treeBox.minX() - reach, lowestGround - 1, treeBox.minZ() - reach,
+					treeBox.maxX() + reach, baseY + 2, treeBox.maxZ() + reach), writable));
+		}
+		return placed;
 	}
 
 	/** Trunks must not cross other trunks or fluids, and may only be partly sunk into a hillside. */
@@ -182,76 +229,34 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 			if (state.is(BlockTags.LOGS) || state.is(BlockTags.FEATURES_CANNOT_REPLACE) || !state.getFluidState().isEmpty()) {
 				return false;
 			}
-			if (!state.isAir() && !state.is(BlockTags.LEAVES) && !isPlant(state) && ++embedded > maxEmbedded) {
+			if (!state.isAir() && !state.is(BlockTags.LEAVES) && !TerrainFitting.isPlant(state) && ++embedded > maxEmbedded) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private static boolean isNearSlopeOrWater(WorldGenLevel level, BlockPos ground) {
+	/**
+	 * A landmark tree wants to stand on its own: no other tree's logs anywhere within its outline (widened by
+	 * {@code clearance}), so no foreign trunk pokes through its crown, and no rocks or deadwood at its foot.
+	 */
+	private static boolean hasClearance(WorldGenLevel level, BoundingBox treeBox, int baseY, int clearance) {
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		for (int dx = -WATER_SEARCH_RADIUS; dx <= WATER_SEARCH_RADIUS; dx++) {
-			for (int dz = -WATER_SEARCH_RADIUS; dz <= WATER_SEARCH_RADIUS; dz++) {
-				for (int dy = -2; dy <= 1; dy++) {
-					if (level.getFluidState(pos.setWithOffset(ground, dx, dy, dz)).is(FluidTags.WATER)) {
-						return true;
+		for (int x = treeBox.minX() - clearance; x <= treeBox.maxX() + clearance; x++) {
+			for (int z = treeBox.minZ() - clearance; z <= treeBox.maxZ() + clearance; z++) {
+				for (int y = baseY; y <= treeBox.maxY(); y++) {
+					BlockState state = level.getBlockState(pos.set(x, y, z));
+					if (state.is(BlockTags.LOGS)) {
+						return false;
+					}
+					if (y < baseY + CLEARANCE_GROUND_HEIGHT && !state.isAir() && !state.is(BlockTags.LEAVES)
+							&& !TerrainFitting.isPlant(state) && !TerrainFitting.isSoil(state)) {
+						return false;
 					}
 				}
 			}
 		}
-		int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
-		for (int[] direction : directions) {
-			int x = ground.getX() + direction[0] * SLOPE_SAMPLE_DISTANCE;
-			int z = ground.getZ() + direction[1] * SLOPE_SAMPLE_DISTANCE;
-			int height = findGround(level, x, z, ground.getY() + 8, 16);
-			if (height != NO_GROUND && Math.abs(height - ground.getY()) >= SLOPE_MIN_HEIGHT_DIFFERENCE) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static final int NO_GROUND = Integer.MIN_VALUE;
-
-	/**
-	 * Searches down from {@code fromY} for soil, passing through air, leaves and plants.
-	 * Returns {@link #NO_GROUND} if it meets anything else first (water, logs, rocks) or finds nothing.
-	 */
-	private static int findGround(WorldGenLevel level, int x, int z, int fromY, int depth) {
-		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, fromY, z);
-		for (int i = 0; i <= depth; i++, pos.move(0, -1, 0)) {
-			BlockState state = level.getBlockState(pos);
-			if (state.isAir() || state.is(BlockTags.LEAVES) || isPlant(state)) {
-				continue;
-			}
-			return isSoil(state) ? pos.getY() : NO_GROUND;
-		}
-		return NO_GROUND;
-	}
-
-	private static boolean isSoil(BlockState state) {
-		return Feature.isDirt(state) || state.is(BlockTags.BASE_STONE_OVERWORLD);
-	}
-
-	private static boolean isAirOrPlant(BlockState state) {
-		return state.isAir() || isPlant(state);
-	}
-
-	/** Small ground vegetation a tree may grow through. Fluids never count. */
-	public static boolean isPlant(BlockState state) {
-		if (!state.getFluidState().isEmpty()) {
-			return false;
-		}
-		return state.canBeReplaced()
-				|| state.is(BlockTags.REPLACEABLE_BY_TREES) && !state.is(BlockTags.LEAVES)
-				|| state.is(BlockTags.SMALL_FLOWERS)
-				|| state.is(Blocks.MOSS_CARPET)
-				|| state.is(Blocks.AZALEA)
-				|| state.is(Blocks.FLOWERING_AZALEA)
-				|| state.is(Blocks.BROWN_MUSHROOM)
-				|| state.is(Blocks.RED_MUSHROOM)
-				|| state.is(Blocks.SWEET_BERRY_BUSH);
+		return true;
 	}
 
 	/**
@@ -259,10 +264,11 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 	 *
 	 * @param logs    every log/wood block
 	 * @param contact logs on the lowest log layer: the trunk base that has to stand on the ground
+	 * @param footing other blocks on that layer (stairs and slabs as root flares) that need ground beneath
 	 * @param pivot   trunk base block closest to the base's center; the tree turns around it
 	 */
 	private record Shape(List<StructureTemplate.StructureBlockInfo> logs, List<StructureTemplate.StructureBlockInfo> contact,
-			BlockPos pivot) {
+			List<BlockPos> footing, BlockPos pivot) {
 
 		static Shape of(StructureTemplate template) {
 			List<StructureTemplate.StructureBlockInfo> logs = new ArrayList<>();
@@ -271,11 +277,15 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 				logs.addAll(template.filterBlocks(BlockPos.ZERO, identity, block.value()));
 			}
 			if (logs.isEmpty()) {
-				return new Shape(List.of(), List.of(), BlockPos.ZERO);
+				return new Shape(List.of(), List.of(), List.of(), BlockPos.ZERO);
 			}
 
 			int minY = logs.stream().mapToInt(info -> info.pos().getY()).min().orElseThrow();
 			List<StructureTemplate.StructureBlockInfo> contact = logs.stream().filter(info -> info.pos().getY() == minY).toList();
+			List<BlockPos> footing = TemplateBlocks.of(template).stream()
+					.filter(info -> info.pos().getY() == minY && !info.state().is(BlockTags.LOGS) && !info.state().is(BlockTags.LEAVES))
+					.map(StructureTemplate.StructureBlockInfo::pos)
+					.toList();
 			double centerX = contact.stream().mapToInt(info -> info.pos().getX()).average().orElseThrow();
 			double centerZ = contact.stream().mapToInt(info -> info.pos().getZ()).average().orElseThrow();
 			BlockPos pivot = contact.get(0).pos();
@@ -288,7 +298,7 @@ public class TemplateTreeFeature extends Feature<TemplateTreeConfiguration> {
 					pivot = info.pos();
 				}
 			}
-			return new Shape(List.copyOf(logs), contact, pivot);
+			return new Shape(List.copyOf(logs), contact, footing, pivot);
 		}
 	}
 }

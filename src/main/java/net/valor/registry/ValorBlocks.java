@@ -10,8 +10,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.valor.Valor;
+import net.valor.world.level.block.EchoFluteAltarBlock;
 
 /**
  * All blocks added by Valor. Counterpart to vanilla's {@link net.minecraft.world.level.block.Blocks}.
@@ -33,6 +38,21 @@ public final class ValorBlocks {
 	 */
 	public static final Block WHISPERING_LEAVES = register("whispering_leaves", LeavesBlock::new,
 			BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_LEAVES));
+
+	/**
+	 * Stone altar for the Echo Flute. Mined like stone bricks; with the flute on it, it burns with soul fire
+	 * and gives off a little light.
+	 */
+	public static final EchoFluteAltarBlock ECHO_FLUTE_ALTAR = register("echo_flute_altar", EchoFluteAltarBlock::new,
+			BlockBehaviour.Properties.of()
+					.mapColor(MapColor.STONE)
+					.instrument(NoteBlockInstrument.BASEDRUM)
+					.requiresCorrectToolForDrops()
+					.strength(1.5F, 6.0F)
+					.sound(SoundType.STONE)
+					.lightLevel(EchoFluteAltarBlock::lightLevel)
+					.noOcclusion()
+					.pushReaction(PushReaction.BLOCK));
 
 	private ValorBlocks() {}
 

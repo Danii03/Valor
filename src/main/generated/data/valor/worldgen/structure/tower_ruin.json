@@ -1,0 +1,74 @@
+{
+  "type": "valor:ruin",
+  "archaeology": {
+    "buried_chance": 0.35,
+    "common_loot": "minecraft:archaeology/trail_ruins_common",
+    "ground": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "minecraft:cobblestone"
+          },
+          "weight": 4
+        },
+        {
+          "data": {
+            "Name": "minecraft:mossy_cobblestone"
+          },
+          "weight": 4
+        },
+        {
+          "data": {
+            "Name": "minecraft:coarse_dirt"
+          },
+          "weight": 2
+        },
+        {
+          "data": {
+            "Name": "minecraft:gravel"
+          },
+          "weight": 2
+        },
+        {
+          "data": {
+            "Name": "minecraft:grass_block",
+            "Properties": {
+              "snowy": "false"
+            }
+          },
+          "weight": 2
+        }
+      ]
+    },
+    "patch_radius": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 2.2,
+      "min_inclusive": 1.0
+    },
+    "patches": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 4,
+      "min_inclusive": 2
+    },
+    "rare_chance": 0.2,
+    "rare_loot": "minecraft:archaeology/trail_ruins_rare",
+    "suspicious": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 4,
+      "min_inclusive": 2
+    }
+  },
+  "biomes": "#valor:has_structure/whispering_woods_ruins",
+  "max_ground_step": 3,
+  "moss_chance": 0.1,
+  "sink": 1,
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "template": "valor:whispering_woods/ruins/tower_ruin",
+  "zone_chance": {
+    "deepwood": 0.5,
+    "hidden_grove": 0.35,
+    "outer_woods": 0.7
+  }
+}

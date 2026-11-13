@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "has_flute=false": {
+      "model": "valor:block/echo_flute_altar"
+    },
+    "has_flute=true": {
+      "model": "valor:block/echo_flute_altar_lit"
+    }
+  }
+}

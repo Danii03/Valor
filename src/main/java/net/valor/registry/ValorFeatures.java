@@ -5,8 +5,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.valor.Valor;
+import net.valor.world.level.levelgen.feature.GroundTemplateFeature;
+import net.valor.world.level.levelgen.feature.RockFormationFeature;
 import net.valor.world.level.levelgen.feature.StreamFeature;
 import net.valor.world.level.levelgen.feature.TemplateTreeFeature;
+import net.valor.world.level.levelgen.feature.configurations.GroundTemplateConfiguration;
+import net.valor.world.level.levelgen.feature.configurations.RockFormationConfiguration;
 import net.valor.world.level.levelgen.feature.configurations.StreamConfiguration;
 import net.valor.world.level.levelgen.feature.configurations.TemplateTreeConfiguration;
 
@@ -25,6 +29,14 @@ public final class ValorFeatures {
 	/** A small, shallow, meandering stream. */
 	public static final Feature<StreamConfiguration> STREAM = register("stream",
 			new StreamFeature(StreamConfiguration.CODEC));
+
+	/** Something built from a structure template that lies on the ground, such as an old stump or a fallen trunk. */
+	public static final Feature<GroundTemplateConfiguration> GROUND_TEMPLATE = register("ground_template",
+			new GroundTemplateFeature(GroundTemplateConfiguration.CODEC));
+
+	/** A small group of old, half-sunken boulders. */
+	public static final Feature<RockFormationConfiguration> ROCK_FORMATION = register("rock_formation",
+			new RockFormationFeature(RockFormationConfiguration.CODEC));
 
 	private ValorFeatures() {}
 

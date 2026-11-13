@@ -24,6 +24,10 @@
     },
     {
       "type": "minecraft:biome"
+    },
+    {
+      "type": "valor:ruin_clearance",
+      "margin": 2
     }
   ]
 }

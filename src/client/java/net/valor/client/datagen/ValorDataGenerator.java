@@ -7,6 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.valor.client.datagen.worldgen.ValorBiomeData;
 import net.valor.client.datagen.worldgen.ValorConfiguredFeatures;
 import net.valor.client.datagen.worldgen.ValorPlacedFeatures;
+import net.valor.client.datagen.worldgen.ValorStructureData;
 
 /**
  * Datagen entrypoint. Run with {@code ./gradlew runDatagen}; output goes to {@code src/main/generated}.
@@ -35,5 +36,7 @@ public final class ValorDataGenerator implements DataGeneratorEntrypoint {
 		registryBuilder.add(Registries.CONFIGURED_FEATURE, ValorConfiguredFeatures::bootstrap);
 		registryBuilder.add(Registries.PLACED_FEATURE, ValorPlacedFeatures::bootstrap);
 		registryBuilder.add(Registries.BIOME, ValorBiomeData::bootstrap);
+		registryBuilder.add(Registries.STRUCTURE, ValorStructureData::bootstrapStructures);
+		registryBuilder.add(Registries.STRUCTURE_SET, ValorStructureData::bootstrapStructureSets);
 	}
 }

@@ -15,13 +15,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Makes the Whispering Woods rare but large: inside the Dark Forest climate slot, the large-scale
- * region noise of {@link WhisperingWoodsRegions} picks Whispering Woods or Dark Forest for the whole
- * slot, instead of splitting it by weirdness (which gives many thin, striped patches).
- * <p>
- * Only touches results that already are Dark Forest or Whispering Woods, so every other biome and the
- * terrain stay vanilla. Both biomes are part of the parameter list (see {@code OverworldBiomeBuilderMixin}),
- * so features, structures and {@code /locate} know about them.
+ * Makes the Whispering Woods rare but large (see {@link WhisperingWoodsRegions}):
+ * <ul>
+ *     <li>inside the Dark Forest climate slot, the large-scale region noise picks Whispering Woods or Dark
+ *     Forest for the whole slot, instead of splitting it by weirdness (which gives thin, striped patches);</li>
+ *     <li>inside a region, a neighboring temperate forest becomes Whispering Woods where the region's slightly
+ *     shifted climate falls into that slot, so the forest grows along the climate into one large area.</li>
+ * </ul>
+ * Only touches results that are Dark Forest, Whispering Woods or one of a few temperate forests; every other
+ * biome and the terrain (which does not depend on temperature or humidity) stay vanilla. Both biomes are part
+ * of the parameter list (see {@code OverworldBiomeBuilderMixin}), so features, structures and {@code /locate}
+ * know about them.
  */
 @Mixin(MultiNoiseBiomeSource.class)
 abstract class MultiNoiseBiomeSourceMixin {
@@ -40,6 +44,15 @@ abstract class MultiNoiseBiomeSourceMixin {
 		Holder<Biome> biome = cir.getReturnValue();
 		if (biome == forests[0] || biome == forests[1]) {
 			cir.setReturnValue(WhisperingWoodsRegions.contains(x, z) ? forests[1] : forests[0]);
+			return;
+		}
+		float growth = WhisperingWoodsRegions.growth(x, z);
+		if (growth > 0.0F && WhisperingWoodsRegions.canGrowInto(biome)) {
+			// Same parameter search as vanilla, with the region's climate; never recurses into this injection.
+			Holder<Biome> grown = ((MultiNoiseBiomeSource) (Object) this).getNoiseBiome(WhisperingWoodsRegions.shift(sampler.sample(x, y, z), growth));
+			if (grown == forests[0] || grown == forests[1]) {
+				cir.setReturnValue(forests[1]);
+			}
 		}
 	}
 

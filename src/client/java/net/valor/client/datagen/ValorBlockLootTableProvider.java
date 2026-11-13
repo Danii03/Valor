@@ -22,5 +22,7 @@ public final class ValorBlockLootTableProvider extends FabricBlockLootTableProvi
 	public void generate() {
 		// Like spruce leaves: itself with shears/Silk Touch, otherwise spruce saplings and sticks.
 		add(ValorBlocks.WHISPERING_LEAVES, block -> createLeavesDrops(block, Blocks.SPRUCE_SAPLING, NORMAL_LEAVES_SAPLING_CHANCES));
+		// The flute on it drops separately (EchoFluteAltarBlock#onRemove).
+		dropSelf(ValorBlocks.ECHO_FLUTE_ALTAR);
 	}
 }

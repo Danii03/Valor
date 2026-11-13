@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
+import net.valor.tag.ValorBiomeTags;
 import net.valor.world.level.biome.ValorBiomes;
 
 /**
@@ -28,5 +29,8 @@ public final class ValorBiomeTagProvider extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(BiomeTags.HAS_RUINED_PORTAL_STANDARD).add(ValorBiomes.WHISPERING_WOODS);
 		getOrCreateTagBuilder(BiomeTags.HAS_TRAIL_RUINS).add(ValorBiomes.WHISPERING_WOODS);
 		getOrCreateTagBuilder(BiomeTags.STRONGHOLD_BIASED_TO).add(ValorBiomes.WHISPERING_WOODS);
+
+		// Valor's own structures.
+		getOrCreateTagBuilder(ValorBiomeTags.HAS_WHISPERING_WOODS_RUINS).add(ValorBiomes.WHISPERING_WOODS);
 	}
 }

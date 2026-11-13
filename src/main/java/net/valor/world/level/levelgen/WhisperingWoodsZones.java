@@ -56,11 +56,40 @@ public final class WhisperingWoodsZones {
 		}
 	}
 
+	/**
+	 * Answers whether the biome at the given quart coordinates is the Whispering Woods. Zone probes lie
+	 * outside the chunks a feature may read, so they always ask the biome source.
+	 */
+	@FunctionalInterface
+	public interface BiomeProbe {
+		boolean isWhisperingWoods(int quartX, int quartY, int quartZ);
+	}
+
 	public static Zone sample(WorldGenLevel level, BlockPos pos) {
 		long seed = level.getSeed();
-		Noises noises = noises(seed);
-		float interior = interior(level, pos, seed);
+		ChunkPos chunk = new ChunkPos(pos);
+		InteriorCache cache = INTERIOR_CACHE.get();
+		float interior;
+		if (cache.valid && cache.seed == seed && cache.chunk == chunk.toLong()) {
+			interior = cache.value;
+		} else {
+			// Like vanilla does for positions without a chunk (WorldGenRegion would throw there).
+			interior = interior((qx, qy, qz) -> level.getLevel().getUncachedNoiseBiome(qx, qy, qz).is(ValorBiomes.WHISPERING_WOODS), pos);
+			cache.valid = true;
+			cache.seed = seed;
+			cache.chunk = chunk.toLong();
+			cache.value = interior;
+		}
+		return zone(seed, interior, pos);
+	}
 
+	/** The zone at {@code pos} without a level, e.g. while structures pick their spot. Not cached. */
+	public static Zone sample(long seed, BiomeProbe probe, BlockPos pos) {
+		return zone(seed, interior(probe, pos), pos);
+	}
+
+	private static Zone zone(long seed, float interior, BlockPos pos) {
+		Noises noises = noises(seed);
 		float deepNoise = smoothstep(-0.35F, 0.4F, (float) noises.deepwood.getValue(pos.getX() / DEEPWOOD_NOISE_SCALE, pos.getZ() / DEEPWOOD_NOISE_SCALE));
 		float deepwood = smoothstep(0.5F, 1.0F, interior) * (0.3F + 0.7F * deepNoise);
 
@@ -71,13 +100,8 @@ public final class WhisperingWoodsZones {
 	}
 
 	/** Share of probes around the chunk that are still Whispering Woods: 1 deep inside, about 0.5 at the edge. */
-	private static float interior(WorldGenLevel level, BlockPos pos, long seed) {
+	private static float interior(BiomeProbe probe, BlockPos pos) {
 		ChunkPos chunk = new ChunkPos(pos);
-		InteriorCache cache = INTERIOR_CACHE.get();
-		if (cache.valid && cache.seed == seed && cache.chunk == chunk.toLong()) {
-			return cache.value;
-		}
-
 		int centerX = chunk.getMiddleBlockX();
 		int centerZ = chunk.getMiddleBlockZ();
 		int quartY = QuartPos.fromBlock(pos.getY());
@@ -89,20 +113,14 @@ public final class WhisperingWoodsZones {
 				float angle = (i + 0.5F * ring) * Mth.TWO_PI / EDGE_PROBE_DIRECTIONS;
 				int x = centerX + Mth.floor(Mth.cos(angle) * EDGE_PROBE_DISTANCES[ring]);
 				int z = centerZ + Mth.floor(Mth.sin(angle) * EDGE_PROBE_DISTANCES[ring]);
-				// Probes lie outside the chunks a feature may read (WorldGenRegion throws there), so ask the
-				// biome source directly, like vanilla does for positions without a chunk.
-				if (level.getLevel().getUncachedNoiseBiome(QuartPos.fromBlock(x), quartY, QuartPos.fromBlock(z)).is(ValorBiomes.WHISPERING_WOODS)) {
+				if (probe.isWhisperingWoods(QuartPos.fromBlock(x), quartY, QuartPos.fromBlock(z))) {
 					inside++;
 				}
 				total++;
 			}
 		}
 
-		cache.valid = true;
-		cache.seed = seed;
-		cache.chunk = chunk.toLong();
-		cache.value = inside / (float) total;
-		return cache.value;
+		return inside / (float) total;
 	}
 
 	private static Noises noises(long seed) {

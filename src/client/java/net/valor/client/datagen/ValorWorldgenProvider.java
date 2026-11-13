@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 
 /**
- * Writes Valor's worldgen data (configured features, placed features, biomes) to
+ * Writes Valor's worldgen data (configured features, placed features, biomes, structures, structure sets) to
  * {@code data/valor/worldgen/}. The contents are defined in {@code datagen/worldgen} and added to
  * the registries in {@link ValorDataGenerator#buildRegistry}.
  */
@@ -22,6 +22,8 @@ public final class ValorWorldgenProvider extends FabricDynamicRegistryProvider {
 		entries.addAll(registries.lookupOrThrow(Registries.CONFIGURED_FEATURE));
 		entries.addAll(registries.lookupOrThrow(Registries.PLACED_FEATURE));
 		entries.addAll(registries.lookupOrThrow(Registries.BIOME));
+		entries.addAll(registries.lookupOrThrow(Registries.STRUCTURE));
+		entries.addAll(registries.lookupOrThrow(Registries.STRUCTURE_SET));
 	}
 
 	@Override

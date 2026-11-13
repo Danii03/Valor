@@ -28,5 +28,6 @@ public final class ValorBlockTagProvider extends FabricTagProvider.BlockTagProvi
 	protected void addTags(HolderLookup.Provider registries) {
 		getOrCreateTagBuilder(BlockTags.LEAVES).add(ValorBlocks.WHISPERING_LEAVES);
 		getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_HOE).add(ValorBlocks.WHISPERING_LEAVES);
+		getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(ValorBlocks.ECHO_FLUTE_ALTAR);
 	}
 }

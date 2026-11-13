@@ -1,0 +1,40 @@
+{
+  "type": "valor:ground_template",
+  "config": {
+    "flat_ground_chance": 0.35,
+    "ground_cover": {
+      "chance": 0.35,
+      "radius": 1,
+      "state": {
+        "type": "minecraft:weighted_state_provider",
+        "entries": [
+          {
+            "data": {
+              "Name": "minecraft:podzol",
+              "Properties": {
+                "snowy": "false"
+              }
+            },
+            "weight": 2
+          },
+          {
+            "data": {
+              "Name": "minecraft:coarse_dirt"
+            },
+            "weight": 1
+          },
+          {
+            "data": {
+              "Name": "minecraft:moss_block"
+            },
+            "weight": 2
+          }
+        ]
+      }
+    },
+    "max_ground_step": 2,
+    "moss_chance": 0.15,
+    "sink_chance": 0.3,
+    "template": "valor:whispering_woods/fallen_stump"
+  }
+}

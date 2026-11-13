@@ -6,6 +6,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.valor.Valor;
+import net.valor.world.level.levelgen.placement.RandomSpreadFilter;
+import net.valor.world.level.levelgen.placement.RuinClearanceFilter;
 import net.valor.world.level.levelgen.placement.WhisperingWoodsZoneFilter;
 
 /**
@@ -16,6 +18,14 @@ public final class ValorPlacementModifierTypes {
 	/** Thins out placement attempts per Whispering Woods zone (Outer Woods, Deepwood, Hidden Groves). */
 	public static final PlacementModifierType<WhisperingWoodsZoneFilter> WHISPERING_WOODS_ZONE = register("whispering_woods_zone",
 			WhisperingWoodsZoneFilter.CODEC);
+
+	/** Lets a rare feature appear in at most one chunk per cell of chunks, like vanilla spreads structures. */
+	public static final PlacementModifierType<RandomSpreadFilter> RANDOM_SPREAD = register("random_spread",
+			RandomSpreadFilter.CODEC);
+
+	/** Keeps a feature away from Whispering Woods ruins. */
+	public static final PlacementModifierType<RuinClearanceFilter> RUIN_CLEARANCE = register("ruin_clearance",
+			RuinClearanceFilter.CODEC);
 
 	private ValorPlacementModifierTypes() {}
 

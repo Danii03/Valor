@@ -2,6 +2,7 @@ package net.valor;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
+import net.valor.registry.ValorBlockEntityTypes;
 import net.valor.registry.ValorBlocks;
 import net.valor.registry.ValorCreativeTabs;
 import net.valor.network.ValorNetworking;
@@ -11,6 +12,8 @@ import net.valor.registry.ValorItems;
 import net.valor.registry.ValorParticleTypes;
 import net.valor.registry.ValorPlacementModifierTypes;
 import net.valor.registry.ValorSounds;
+import net.valor.registry.ValorStructurePieceTypes;
+import net.valor.registry.ValorStructureTypes;
 import net.valor.world.level.biome.WhisperingWoodsRegions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +32,14 @@ public final class Valor implements ModInitializer {
 		// Order matters: anything referenced by a later registry has to be registered first.
 		ValorSounds.init();
 		ValorBlocks.init();
+		ValorBlockEntityTypes.init();
 		ValorItems.init();
 		ValorParticleTypes.init();
 		ValorStructureProcessorTypes.init();
 		ValorPlacementModifierTypes.init();
 		ValorFeatures.init();
+		ValorStructurePieceTypes.init();
+		ValorStructureTypes.init();
 		ValorCreativeTabs.init();
 		ValorNetworking.init();
 		WhisperingWoodsRegions.init();

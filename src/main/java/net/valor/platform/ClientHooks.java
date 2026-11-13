@@ -1,7 +1,9 @@
 package net.valor.platform;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 /**
  * Bridge from common code to client-only code.
@@ -17,6 +19,9 @@ public final class ClientHooks {
 	public interface Handler {
 		/** Opens the Echo Flute music screen for the local player. */
 		default void openEchoFlute(Player player, InteractionHand hand) {}
+
+		/** Called every client tick by each loaded Echo Flute altar; drives its crackling sound. */
+		default void tickEchoFluteAltar(Level level, BlockPos pos, boolean lit) {}
 	}
 
 	private static Handler handler = new Handler() {};

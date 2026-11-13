@@ -1,0 +1,35 @@
+{
+  "feature": "valor:huge_stump",
+  "placement": [
+    {
+      "type": "valor:random_spread",
+      "salt": 1460095773,
+      "separation": 1,
+      "spacing": 3
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:surface_water_depth_filter",
+      "max_water_depth": 0
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "OCEAN_FLOOR"
+    },
+    {
+      "type": "valor:whispering_woods_zone",
+      "deepwood": 0.85,
+      "hidden_grove": 0.3,
+      "outer_woods": 0.15
+    },
+    {
+      "type": "minecraft:biome"
+    },
+    {
+      "type": "valor:ruin_clearance",
+      "margin": 5
+    }
+  ]
+}

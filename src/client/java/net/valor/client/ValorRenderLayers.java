@@ -1,5 +1,9 @@
 package net.valor.client;
 
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.minecraft.client.renderer.RenderType;
+import net.valor.registry.ValorBlocks;
+
 /**
  * Assigns non-solid render layers to blocks that need them.
  * <ul>
@@ -18,5 +22,8 @@ public final class ValorRenderLayers {
 
 	public static void init() {
 		// ---- Render layers go here -------------------------------------------------------
+
+		// The soul fire on a lit altar has transparent pixels, like vanilla's soul fire.
+		BlockRenderLayerMap.INSTANCE.putBlock(ValorBlocks.ECHO_FLUTE_ALTAR, RenderType.cutout());
 	}
 }

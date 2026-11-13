@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.valor.Valor;
+import net.valor.world.level.levelgen.structure.templatesystem.RuinProcessor;
 import net.valor.world.level.levelgen.structure.templatesystem.TemplateTreeProcessor;
 
 /**
@@ -14,6 +15,8 @@ public final class ValorStructureProcessorTypes {
 
 	public static final StructureProcessorType<TemplateTreeProcessor> TEMPLATE_TREE = register("template_tree",
 			() -> TemplateTreeProcessor.CODEC);
+
+	public static final StructureProcessorType<RuinProcessor> RUIN = register("ruin", () -> RuinProcessor.CODEC);
 
 	private ValorStructureProcessorTypes() {}
 

@@ -36,7 +36,8 @@
     ],
     [
       "minecraft:amethyst_geode",
-      "minecraft:forest_rock",
+      "valor:forest_rock_whispering_woods",
+      "valor:rock_formation_whispering_woods",
       "valor:disk_podzol",
       "valor:disk_coarse_dirt",
       "valor:disk_rooted_dirt"
@@ -84,6 +85,8 @@
     ],
     [
       "minecraft:glow_lichen",
+      "valor:huge_stump",
+      "valor:fallen_stump",
       "valor:moss_patch_whispering_woods",
       "valor:patch_large_fern_whispering_woods",
       "valor:patch_tall_grass_whispering_woods",
@@ -93,6 +96,7 @@
       "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin",
       "minecraft:patch_berry_common",
+      "valor:whispering_tree_5",
       "valor:whispering_tree_3",
       "valor:whispering_tree_1",
       "valor:whispering_tree_4",

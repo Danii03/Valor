@@ -1,0 +1,26 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "exclusion_zone": {
+      "chunk_count": 4,
+      "other_set": "minecraft:trail_ruins"
+    },
+    "salt": 2115086053,
+    "separation": 5,
+    "spacing": 12
+  },
+  "structures": [
+    {
+      "structure": "valor:fallen_gate",
+      "weight": 7
+    },
+    {
+      "structure": "valor:sunken_ruin",
+      "weight": 4
+    },
+    {
+      "structure": "valor:tower_ruin",
+      "weight": 1
+    }
+  ]
+}

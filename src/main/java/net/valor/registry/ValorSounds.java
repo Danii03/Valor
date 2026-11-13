@@ -25,6 +25,8 @@ public final class ValorSounds {
 	public static final SoundEvent AMBIENT_WHISPERING_WOODS_BIRDS = register("ambient.whispering_woods.birds");
 	/** Distant crows in the Whispering Woods. Much rarer than the birds. */
 	public static final SoundEvent AMBIENT_WHISPERING_WOODS_CROWS = register("ambient.whispering_woods.crows");
+	/** Soft crackle of the soul fire on an Echo Flute altar. Vanilla's campfire clips, audible only close by; played by the client's altar sound handler. */
+	public static final SoundEvent BLOCK_ECHO_FLUTE_ALTAR_CRACKLE = register("block.echo_flute_altar.crackle");
 
 	private ValorSounds() {}
 

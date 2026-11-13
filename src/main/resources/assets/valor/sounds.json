@@ -18,5 +18,16 @@
       {"name": "valor:ambient/whispering_woods/crows4", "stream": true}
     ],
     "subtitle": "subtitles.valor.ambient.whispering_woods.crows"
+  },
+  "block.echo_flute_altar.crackle": {
+    "sounds": [
+      {"name": "minecraft:block/campfire/crackle1", "attenuation_distance": 8},
+      {"name": "minecraft:block/campfire/crackle2", "attenuation_distance": 8},
+      {"name": "minecraft:block/campfire/crackle3", "attenuation_distance": 8},
+      {"name": "minecraft:block/campfire/crackle4", "attenuation_distance": 8},
+      {"name": "minecraft:block/campfire/crackle5", "attenuation_distance": 8},
+      {"name": "minecraft:block/campfire/crackle6", "attenuation_distance": 8}
+    ],
+    "subtitle": "subtitles.valor.block.echo_flute_altar.crackle"
   }
 }

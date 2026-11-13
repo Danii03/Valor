@@ -78,7 +78,10 @@ public final class ValorBiomeData {
 		generation.addFeature(GenerationStep.Decoration.LAKES, ValorPlacedFeatures.STREAM_WHISPERING_WOODS);
 
 		// Ground: mostly grass. Podzol, coarse dirt and rooted dirt only as small accents.
-		BiomeDefaultFeatures.addMossyStoneBlock(generation);
+		// Vanilla's mossy boulders (BiomeDefaultFeatures.addMossyStoneBlock), placed so they keep clear of ruins.
+		generation.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, ValorPlacedFeatures.FOREST_ROCK_WHISPERING_WOODS);
+		// Old, half-sunken boulder groups; before vegetation and trees, so plants grow around them and trees avoid them.
+		generation.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, ValorPlacedFeatures.ROCK_FORMATION_WHISPERING_WOODS);
 		generation.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, ValorPlacedFeatures.DISK_PODZOL);
 		generation.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, ValorPlacedFeatures.DISK_COARSE_DIRT);
 		generation.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, ValorPlacedFeatures.DISK_ROOTED_DIRT);
@@ -88,7 +91,10 @@ public final class ValorBiomeData {
 		generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
 		generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_GRAVEL);
 
-		// Undergrowth first, trees last, so it also covers the ground under the canopies.
+		// Deadwood first, so the undergrowth grows around (and inside) stumps and fallen trunks.
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.HUGE_STUMP);
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.FALLEN_STUMP);
+		// Undergrowth next, trees last, so it also covers the ground under the canopies.
 		// Densities per forest zone (Outer Woods, Deepwood, Hidden Groves) are set in ValorPlacedFeatures.
 		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.MOSS_PATCH_WHISPERING_WOODS);
 		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.PATCH_LARGE_FERN_WHISPERING_WOODS);
@@ -98,7 +104,8 @@ public final class ValorBiomeData {
 		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.RED_MUSHROOM_WHISPERING_WOODS);
 		BiomeDefaultFeatures.addDefaultExtraVegetation(generation);
 		BiomeDefaultFeatures.addCommonBerryBushes(generation);
-		// Biggest trees first, vanilla spruces last as gap fillers.
+		// Biggest trees first (the rare landmark giant before all others), vanilla spruces last as gap fillers.
+		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.WHISPERING_TREE_5);
 		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.WHISPERING_TREE_3);
 		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.WHISPERING_TREE_1);
 		generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ValorPlacedFeatures.WHISPERING_TREE_4);
